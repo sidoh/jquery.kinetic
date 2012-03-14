@@ -174,7 +174,8 @@
             .mousemove(settings.events.inputMove);
         }
         $this.click(settings.events.inputClick)
-        .bind("selectstart", selectStart); // prevent selection when dragging
+        .bind("selectstart", selectStart) // prevent selection when dragging
+        .bind("dragstart", dragStart);    // prevent draggable images
     };
     var detachListeners = function($this, settings) {
         var element = $this[0];
@@ -189,7 +190,8 @@
             .unbind('mousemove', settings.events.inputMove);
         }
         $this.unbind('click', settings.events.inputClick)
-        .unbind("selectstart", selectStart); // prevent selection when dragging
+        .unbind("selectstart", selectStart) // prevent selection when dragging
+        .unbind("dragstart", dragStart);
     };
 
     var initElements = function(options) {
@@ -217,9 +219,9 @@
             settings.velocityY = 0;
 
             // prevent drag and drop images in ie
-            $(document).bind('dragstart', function(e) {
-                return !!elementFocused;
-            });
+            var dragFilter = function(e) {
+            	return !!elementFocused;
+            };
             // make sure we reset everything when mouse up
             var resetMouse = function() {
                 xpos = false;
@@ -308,7 +310,8 @@
                         e.preventDefault();
                         return false;
                     }
-                }
+                },
+               	dragStart: dragFilter
             };
             
             attachListeners($this, settings);
